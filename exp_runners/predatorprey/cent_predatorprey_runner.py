@@ -121,10 +121,11 @@ def run(args):
                 optimization_mini_epochs=args.opt_mini_epochs,
             )
             
-            # runner.setup(algo, env, sampler_cls=CentralizedMAOnPolicyVectorizedSampler, sampler_args={'n_envs': args.n_envs})
-            # runner.train(n_epochs=args.n_epochs, batch_size=args.bs)
+            runner.setup(algo, env, sampler_cls=CentralizedMAOnPolicyVectorizedSampler, sampler_args={'n_envs': args.n_envs})
+            runner.train(n_epochs=args.n_epochs, batch_size=args.bs)
 
         train_predatorprey(args_dict=vars(args))
+        print('Training Done!')
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -137,12 +138,12 @@ if __name__ == '__main__':
     # Train
     parser.add_argument('--seed', '-s', type=int, default=2021)
     parser.add_argument('--n_epochs', type=int, default=10)
-    parser.add_argument('--bs', type=int, default=60000)
+    parser.add_argument('--bs', type=int, default=600)
     parser.add_argument('--n_envs', type=int, default=1)
 
     # Eval
     parser.add_argument('--run_id', type=int, default=0) # sequential naming
-    parser.add_argument('--n_eval_episodes', type=int, default=1)
+    parser.add_argument('--n_eval_episodes', type=int, default=10)
     parser.add_argument('--render', type=int, default=1)
     parser.add_argument('--eval_during_training', type=int, default=1)
     parser.add_argument('--eval_greedy', type=int, default=1)
@@ -150,7 +151,7 @@ if __name__ == '__main__':
 
     # Env
     parser.add_argument('--max_env_steps', type=int, default=128)
-    parser.add_argument('--grid_size', type=int, default=5)
+    parser.add_argument('--grid_size', type=int, default=3)
     parser.add_argument('--n_agents', '-n', type=int, default=2)
     parser.add_argument('--n_preys', type=int, default=1)
     parser.add_argument('--step_cost', type=float, default=-0.01)
