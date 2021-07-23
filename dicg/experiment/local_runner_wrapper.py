@@ -1,20 +1,14 @@
+from logging import error
 from garage.experiment import LocalRunner
 from garage.sampler.base import BaseSampler
 from dowel import logger
 
 class LocalRunnerWrapper(LocalRunner):
 
-    def __init__(self, 
-                 snapshot_config, 
-                 eval=False,
-                 n_eval_episodes=100,
-                 eval_greedy=True,
-                 eval_epoch_freq=10,
-                 save_env=True):
+    def __init__(self, snapshot_config, eval=False, n_eval_episodes=100, eval_greedy=True, eval_epoch_freq=10, save_env=True):
         super().__init__(snapshot_config)
         
         self.save_env = save_env
-
         self.eval = eval
         self.n_eval_episodes = n_eval_episodes
         self.eval_greedy = eval_greedy
@@ -65,7 +59,7 @@ class LocalRunnerWrapper(LocalRunner):
 
         """
         if not self._has_setup:
-            raise NotSetupError('Use setup() to setup runner before saving.')
+            raise error('Use setup() to setup runner before saving.')
 
         logger.log('Saving snapshot...')
 

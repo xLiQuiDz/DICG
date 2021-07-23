@@ -62,11 +62,7 @@ def run(args):
 
     if args.mode == 'train':
         # making sequential log dir if name already exists
-        @wrap_experiment(name=exp_name,
-                         prefix=prefix,
-                         log_dir=exp_dir,
-                         snapshot_mode='last', 
-                         snapshot_gap=1)
+        @wrap_experiment(name=exp_name, prefix=prefix, log_dir=exp_dir, snapshot_mode='last',  snapshot_gap=1)
         
         def train_predatorprey(ctxt=None, args_dict=vars(args)):
 
@@ -84,7 +80,7 @@ def run(args):
                 penalty=args.penalty,
                 other_agent_visible=args.agent_visible
             )
-            
+
             env = GarageEnv(env)
 
             runner = LocalRunnerWrapper(
@@ -98,6 +94,7 @@ def run(args):
 
             hidden_nonlinearity = F.relu if args.hidden_nonlinearity == 'relu' \
                                     else torch.tanh
+
             policy = CentralizedCategoricalMLPPolicy(
                 env.spec,
                 n_agents=args.n_agents,

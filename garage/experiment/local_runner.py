@@ -11,7 +11,6 @@ from garage.experiment.deterministic import get_seed, set_seed
 from garage.experiment.snapshotter import Snapshotter
 from garage.sampler import parallel_sampler
 from garage.sampler.base import BaseSampler
-# This is avoiding a circular import
 from garage.sampler.worker import DefaultWorker
 from garage.sampler.worker_factory import WorkerFactory
 
@@ -117,25 +116,17 @@ class LocalRunner:
     """
 
     def __init__(self, snapshot_config, max_cpus=1):
-        self._snapshotter = Snapshotter(snapshot_config.snapshot_dir,
-                                        snapshot_config.snapshot_mode,
-                                        snapshot_config.snapshot_gap)
+        self._snapshotter = Snapshotter(snapshot_config.snapshot_dir, snapshot_config.snapshot_mode, snapshot_config.snapshot_gap)
 
         parallel_sampler.initialize(max_cpus)
 
-        seed = get_seed()
-        if seed is not None:
-            parallel_sampler.set_seed(seed)
+        seed = 2021
 
         self._has_setup = False
         self._plot = False
-
         self._setup_args = None
         self._train_args = None
-        self._stats = ExperimentStats(total_itr=0,
-                                      total_env_steps=0,
-                                      total_epoch=0,
-                                      last_path=None)
+        self._stats = ExperimentStats(total_itr=0, total_env_steps=0, total_epoch=0, last_path=None)
 
         self._algo = None
         self._env = None
@@ -148,12 +139,7 @@ class LocalRunner:
         self.step_itr = None
         self.step_path = None
 
-    def make_sampler(self,
-                     sampler_cls,
-                     *,
-                     seed=None,
-                     n_workers=psutil.cpu_count(logical=False),
-                     max_path_length=None,
+    def make_sampler(self, sampler_cls, *, seed=None, n_workers=psutil.cpu_count(logical=False), max_path_length=None,
                      worker_class=DefaultWorker,
                      sampler_args=None):
         """Construct a Sampler from a Sampler class.
@@ -206,6 +192,7 @@ class LocalRunner:
             sampler_args (dict): Arguments to be passed to sampler constructor.
 
         """
+
         self._algo = algo
         self._env = env
         self._policy = self._algo.policy
@@ -214,14 +201,11 @@ class LocalRunner:
             sampler_args = {}
         if sampler_cls is None:
             sampler_cls = algo.sampler_cls
-        self._sampler = self.make_sampler(sampler_cls,
-                                          sampler_args=sampler_args)
+        self._sampler = self.make_sampler(sampler_cls, sampler_args=sampler_args)
 
         self._has_setup = True
 
-        self._setup_args = SetupArgs(sampler_cls=sampler_cls,
-                                     sampler_args=sampler_args,
-                                     seed=get_seed())
+        self._setup_args = SetupArgs(sampler_cls=sampler_cls, sampler_args=sampler_args, seed=get_seed())
 
     def _start_worker(self):
         """Start Plotter and Sampler workers."""
