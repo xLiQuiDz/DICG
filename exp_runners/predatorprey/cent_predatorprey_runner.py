@@ -92,17 +92,16 @@ def run(args):
                 save_env=env.pickleable
             )
 
-            hidden_nonlinearity = F.relu if args.hidden_nonlinearity == 'relu' \
-                                    else torch.tanh
-
+            # ACTOR
             policy = CentralizedCategoricalMLPPolicy(
                 env.spec,
                 n_agents=args.n_agents,
-                hidden_nonlinearity=hidden_nonlinearity,
+                hidden_nonlinearity=torch.tanh,
                 hidden_sizes=args.hidden_sizes,
                 name='centralized'
             )
 
+            # CRITIC
             baseline = GaussianMLPBaseline(env_spec=env.spec, hidden_sizes=(64, 64, 64))
             
             algo = CentralizedMAPPO(
@@ -122,8 +121,8 @@ def run(args):
                 optimization_mini_epochs=args.opt_mini_epochs,
             )
             
-            runner.setup(algo, env, sampler_cls=CentralizedMAOnPolicyVectorizedSampler, sampler_args={'n_envs': args.n_envs})
-            runner.train(n_epochs=args.n_epochs, batch_size=args.bs)
+            # runner.setup(algo, env, sampler_cls=CentralizedMAOnPolicyVectorizedSampler, sampler_args={'n_envs': args.n_envs})
+            # runner.train(n_epochs=args.n_epochs, batch_size=args.bs)
 
         train_predatorprey(args_dict=vars(args))
 
@@ -136,14 +135,14 @@ if __name__ == '__main__':
     parser.add_argument('--exp_name', type=str, default=None)
 
     # Train
-    parser.add_argument('--seed', '-s', type=int, default=1)
-    parser.add_argument('--n_epochs', type=int, default=1000)
+    parser.add_argument('--seed', '-s', type=int, default=2021)
+    parser.add_argument('--n_epochs', type=int, default=10)
     parser.add_argument('--bs', type=int, default=60000)
     parser.add_argument('--n_envs', type=int, default=1)
 
     # Eval
     parser.add_argument('--run_id', type=int, default=0) # sequential naming
-    parser.add_argument('--n_eval_episodes', type=int, default=100)
+    parser.add_argument('--n_eval_episodes', type=int, default=1)
     parser.add_argument('--render', type=int, default=1)
     parser.add_argument('--eval_during_training', type=int, default=1)
     parser.add_argument('--eval_greedy', type=int, default=1)

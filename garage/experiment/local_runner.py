@@ -343,12 +343,7 @@ class LocalRunner:
             if pause_for_plot:
                 input('Plotting evaluation run: Press Enter to " "continue...')
 
-    def train(self,
-              n_epochs,
-              batch_size,
-              plot=False,
-              store_paths=False,
-              pause_for_plot=False):
+    def train(self, n_epochs, batch_size, plot=False, store_paths=False,pause_for_plot=False):
         """Start training.
 
         Args:
@@ -369,12 +364,7 @@ class LocalRunner:
             raise NotSetupError('Use setup() to setup runner before training.')
 
         # Save arguments for restore
-        self._train_args = TrainArgs(n_epochs=n_epochs,
-                                     batch_size=batch_size,
-                                     plot=plot,
-                                     store_paths=store_paths,
-                                     pause_for_plot=pause_for_plot,
-                                     start_epoch=0)
+        self._train_args = TrainArgs(n_epochs=n_epochs, batch_size=batch_size, plot=plot, store_paths=store_paths, pause_for_plot=pause_for_plot, start_epoch=0)
 
         self._plot = plot
 

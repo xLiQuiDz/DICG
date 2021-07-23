@@ -133,22 +133,6 @@ def run(args):
 
         train_predatorprey(args_dict=vars(args))
 
-    elif args.mode in ['restore', 'eval']:
-        data = joblib.load(exp_dir + '/params.pkl')
-        algo = data['algo']
-        env = data['env']
-
-        if args.mode == 'restore':
-            from dicg.experiment.runner_utils import restore_training
-            restore_training(exp_dir, exp_name, args,
-                             env_saved=env.pickleable, env=env)
-
-        elif args.mode == 'eval':
-            env.eval(algo.policy, n_episodes=args.n_eval_episodes, 
-                greedy=args.eval_greedy, load_from_file=True, render=args.render)
-            env.close()
-
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     # Meta
