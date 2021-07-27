@@ -127,7 +127,7 @@ def run(args):
             # sampler_args (dict): Arguments to be passed to sampler constructor.
             
             runner.setup(algo, env, sampler_cls=CentralizedMAOnPolicyVectorizedSampler, sampler_args={'n_envs': args.n_envs})
-            # runner.train(n_epochs=args.n_epochs, batch_size=args.bs)
+            runner.train(n_epochs=args.n_epochs, batch_size=args.bs)
 
             print('Training Done!')
 
@@ -157,13 +157,13 @@ if __name__ == '__main__':
 
     # Train
     parser.add_argument('--seed', '-s', type=int, default=1)
-    parser.add_argument('--n_epochs', type=int, default=10)
+    parser.add_argument('--n_epochs', type=int, default=10) # dicg/np.algos/ma_batch_polopt
     parser.add_argument('--bs', type=int, default=60000)
     parser.add_argument('--n_envs', type=int, default=1)
 
     # Eval
     parser.add_argument('--run_id', type=int, default=0) 
-    parser.add_argument('--n_eval_episodes', type=int, default=100)
+    parser.add_argument('--n_eval_episodes', type=int, default=1)
     parser.add_argument('--render', type=int, default=1)
     parser.add_argument('--eval_during_training', type=int, default=1)
     parser.add_argument('--eval_greedy', type=int, default=1)

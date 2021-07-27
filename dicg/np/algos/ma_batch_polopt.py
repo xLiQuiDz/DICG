@@ -28,8 +28,7 @@ class MABatchPolopt(RLAlgorithm):
         n_samples (int): Number of train_once calls per epoch.
     """
 
-    def __init__(self, env_spec, policy, baseline, discount, max_path_length,
-                 n_samples):
+    def __init__(self, env_spec, policy, baseline, discount, max_path_length, n_samples):
         self.env_spec = env_spec
         self.policy = policy
         self.baseline = baseline
