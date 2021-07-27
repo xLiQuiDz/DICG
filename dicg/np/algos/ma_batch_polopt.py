@@ -13,14 +13,12 @@ from dicg.sampler import CentralizedMAOnPolicyVectorizedSampler
 
 class MABatchPolopt(RLAlgorithm):
     """A batch-based algorithm interleaves sampling and policy optimization.
-
     In one round of training, the runner will first instruct the sampler to do
     environment rollout and the sampler will collect a given number of samples
     (in terms of environment interactions). The collected paths are then
     absorbed by `RLAlgorithm.train_once()` and an algorithm performs one step
     of policy optimization. The updated policy will then be used in the
     next round of sampling.
-
     Args:
         env_spec (garage.envs.EnvSpec): Environment specification.
         policy (garage.tf.policies.base.Policy): Policy.
@@ -28,7 +26,6 @@ class MABatchPolopt(RLAlgorithm):
         discount (float): Discount.
         max_path_length (int): Maximum length of a single rollout.
         n_samples (int): Number of train_once calls per epoch.
-
     """
 
     def __init__(self, env_spec, policy, baseline, discount, max_path_length,
@@ -48,24 +45,19 @@ class MABatchPolopt(RLAlgorithm):
     @abc.abstractmethod
     def train_once(self, itr, paths):
         """Perform one step of policy optimization given one batch of samples.
-
         Args:
             itr (int): Iteration number.
             paths (list[dict]): A list of collected paths.
-
         """
 
     def train(self, runner):
         """Obtain samplers and start actual training for each epoch.
-
         Args:
             runner (LocalRunner): LocalRunner is passed to give algorithm
                 the access to runner.step_epochs(), which provides services
                 such as snapshotting and sampler control.
-
         Returns:
             float: The average return in last epoch cycle.
-
         """
         last_return = None
 
@@ -73,8 +65,7 @@ class MABatchPolopt(RLAlgorithm):
             for _ in range(self.n_samples):
                 runner.step_path = runner.obtain_samples(runner.step_itr)
                 tabular.record('TotalEnvSteps', runner.total_env_steps)
-                last_return = self.train_once(runner.step_itr,
-                                              runner.step_path)
+                last_return = self.train_once(runner.step_itr, runner.step_path)
                 runner.step_itr += 1
 
                 if hasattr(runner, 'eval'):
@@ -85,5 +76,3 @@ class MABatchPolopt(RLAlgorithm):
                                 n_episodes=runner.n_eval_episodes,
                                 greedy=runner.eval_greedy)
         return last_return
-
-        

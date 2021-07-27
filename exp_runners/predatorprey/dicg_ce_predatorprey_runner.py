@@ -57,7 +57,7 @@ def run(args):
     else:
         exp_name = args.exp_name
 
-    prefix = 'predatorprey'
+    prefix = 'predator-prey'
     id_suffix = ('_' + str(args.run_id)) if args.run_id != 0 else ''
     unseeded_exp_dir = './data/' + args.loc +'/' + exp_name[:-7]
     exp_dir = './data/' + args.loc +'/' + exp_name + id_suffix
@@ -211,12 +211,12 @@ if __name__ == '__main__':
     parser.add_argument('--exp_name', type=str, default=None)
     # Train
     parser.add_argument('--seed', '-s', type=int, default=1)
-    parser.add_argument('--n_epochs', type=int, default=1000)
-    parser.add_argument('--bs', type=int, default=60000)
+    parser.add_argument('--n_epochs', type=int, default=1)
+    parser.add_argument('--bs', type=int, default=6)
     parser.add_argument('--n_envs', type=int, default=1)
     # Eval
     parser.add_argument('--run_id', type=int, default=0) # sequential naming
-    parser.add_argument('--n_eval_episodes', type=int, default=100)
+    parser.add_argument('--n_eval_episodes', type=int, default=1)
     parser.add_argument('--render', type=int, default=1)
     parser.add_argument('--inspect_steps', type=int, default=0)
     parser.add_argument('--eval_during_training', type=int, default=0)

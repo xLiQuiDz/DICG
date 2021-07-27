@@ -62,15 +62,13 @@ def run(args):
 
     if args.mode == 'train':
         # making sequential log dir if name already exists
-        @wrap_experiment(name=exp_name,
-                         prefix=prefix,
-                         log_dir=exp_dir,
-                         snapshot_mode='last', 
-                         snapshot_gap=1)
+        @wrap_experiment(name=exp_name, prefix=prefix, log_dir=exp_dir, snapshot_mode='last', snapshot_gap=1)
         
         def train_predatorprey(ctxt=None, args_dict=vars(args)):
+
             args = SimpleNamespace(**args_dict)
             set_seed(args.seed)
+
             env = PredatorPreyWrapper(
                 centralized=True, # centralized training
                 grid_shape=(args.grid_size, args.grid_size),
@@ -95,6 +93,7 @@ def run(args):
 
             hidden_nonlinearity = F.relu if args.hidden_nonlinearity == 'relu' \
                                     else torch.tanh
+
             policy = DecCategoricalMLPPolicy(
                 env.spec,
                 env.n_agents,
@@ -102,12 +101,8 @@ def run(args):
                 hidden_sizes=args.hidden_sizes,
                 name='dec_categorical_mlp_policy')
 
-            baseline = GaussianMLPBaseline(env_spec=env.spec,
-                                           hidden_sizes=(64, 64, 64))
+            baseline = GaussianMLPBaseline(env_spec=env.spec, hidden_sizes=(64, 64, 64))
             
-            # Set max_path_length <= max_steps
-            # If max_path_length > max_steps, algo will pad obs
-            # obs.shape = torch.Size([n_paths, algo.max_path_length, feat_dim])
             algo = CentralizedMAPPO(
                 env_spec=env.spec,
                 policy=policy,
@@ -124,26 +119,31 @@ def run(args):
                 optimization_n_minibatches=args.opt_n_minibatches,
                 optimization_mini_epochs=args.opt_mini_epochs,
             )
+
+            # algo (garage.np.algos.RLAlgorithm): An algorithm instance.
+            # env (garage.envs.GarageEnv): An environement instance.
+            # sampler_cls (garage.sampler.Sampler): A sampler class.
+            # sampler_args (dict): Arguments to be passed to sampler constructor.
             
-            runner.setup(algo, env,
-                sampler_cls=CentralizedMAOnPolicyVectorizedSampler, 
-                sampler_args={'n_envs': args.n_envs})
-            runner.train(n_epochs=args.n_epochs, 
-                         batch_size=args.bs)
+            runner.setup(algo, env, sampler_cls=CentralizedMAOnPolicyVectorizedSampler, sampler_args={'n_envs': args.n_envs})
+            # runner.train(n_epochs=args.n_epochs, batch_size=args.bs)
 
         train_predatorprey(args_dict=vars(args))
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
+
     # Meta
     parser.add_argument('--mode', '-m', type=str, default='train')
     parser.add_argument('--loc', type=str, default='local')
     parser.add_argument('--exp_name', type=str, default=None)
+
     # Train
     parser.add_argument('--seed', '-s', type=int, default=1)
     parser.add_argument('--n_epochs', type=int, default=1000)
     parser.add_argument('--bs', type=int, default=60000)
     parser.add_argument('--n_envs', type=int, default=1)
+
     # Eval
     parser.add_argument('--run_id', type=int, default=0) # sequential naming
     parser.add_argument('--n_eval_episodes', type=int, default=100)
@@ -151,6 +151,7 @@ if __name__ == '__main__':
     parser.add_argument('--eval_during_training', type=int, default=0)
     parser.add_argument('--eval_greedy', type=int, default=1)
     parser.add_argument('--eval_epoch_freq', type=int, default=20)
+
     # Env
     parser.add_argument('--max_env_steps', type=int, default=200)
     parser.add_argument('--grid_size', type=int, default=10)
@@ -160,8 +161,8 @@ if __name__ == '__main__':
     parser.add_argument('--capture_reward', type=float, default=10)
     parser.add_argument('--agent_visible', type=int, default=1)
     parser.add_argument('--step_cost', type=float, default=-0.1)
+
     # Algo
-    # parser.add_argument('--max_algo_path_length', type=int, default=n_steps)
     parser.add_argument('--hidden_nonlinearity', type=str, default='tanh')
     parser.add_argument('--discount', type=float, default=0.99)
     parser.add_argument('--center_adv', type=int, default=1)
@@ -169,10 +170,9 @@ if __name__ == '__main__':
     parser.add_argument('--gae_lambda', type=float, default=0.97)
     parser.add_argument('--ent', type=float, default=0.1)
     parser.add_argument('--entropy_method', type=str, default='regularized')
-    parser.add_argument('--opt_n_minibatches', type=int, default=3,
-        help='The number of splits of a batch of trajectories for optimization.')
-    parser.add_argument('--opt_mini_epochs', type=int, default=10,
-        help='The number of epochs the optimizer runs for each batch of trajectories.')
+    parser.add_argument('--opt_n_minibatches', type=int, default=3, help='The number of splits of a batch of trajectories for optimization.')
+    parser.add_argument('--opt_mini_epochs', type=int, default=10, help='The number of epochs the optimizer runs for each batch of trajectories.')
+    
     # Policy
     parser.add_argument('--hidden_sizes', type=list, default=[128, 64, 32])
 

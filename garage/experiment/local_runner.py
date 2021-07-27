@@ -16,7 +16,7 @@ from garage.sampler.worker_factory import WorkerFactory
 
 
 class ExperimentStats:
-    # pylint: disable=too-few-public-methods
+
     """Statistics of a experiment.
 
     Args:
@@ -33,9 +33,7 @@ class ExperimentStats:
         self.total_env_steps = total_env_steps
         self.last_path = last_path
 
-
 class SetupArgs:
-    # pylint: disable=too-few-public-methods
     """Arguments to setup a runner.
 
     Args:
@@ -52,7 +50,6 @@ class SetupArgs:
 
 
 class TrainArgs:
-    # pylint: disable=too-few-public-methods
     """Arguments to call train() or resume().
 
     Args:
@@ -65,15 +62,14 @@ class TrainArgs:
 
     """
 
-    def __init__(self, n_epochs, batch_size, plot, store_paths, pause_for_plot,
-                 start_epoch):
+    def __init__(self, n_epochs, batch_size, plot, store_paths, pause_for_plot, start_epoch):
+
         self.n_epochs = n_epochs
         self.batch_size = batch_size
         self.plot = plot
         self.store_paths = store_paths
         self.pause_for_plot = pause_for_plot
         self.start_epoch = start_epoch
-
 
 class LocalRunner:
     """Base class of local runner.
@@ -116,11 +112,14 @@ class LocalRunner:
     """
 
     def __init__(self, snapshot_config, max_cpus=1):
+
         self._snapshotter = Snapshotter(snapshot_config.snapshot_dir, snapshot_config.snapshot_mode, snapshot_config.snapshot_gap)
 
         parallel_sampler.initialize(max_cpus)
 
-        seed = 2021
+        seed = get_seed()
+        if seed is not None:
+            parallel_sampler.set_seed(seed)
 
         self._has_setup = False
         self._plot = False
@@ -201,10 +200,9 @@ class LocalRunner:
             sampler_args = {}
         if sampler_cls is None:
             sampler_cls = algo.sampler_cls
+
         self._sampler = self.make_sampler(sampler_cls, sampler_args=sampler_args)
-
         self._has_setup = True
-
         self._setup_args = SetupArgs(sampler_cls=sampler_cls, sampler_args=sampler_args, seed=get_seed())
 
     def _start_worker(self):
@@ -343,28 +341,31 @@ class LocalRunner:
             if pause_for_plot:
                 input('Plotting evaluation run: Press Enter to " "continue...')
 
-    def train(self, n_epochs, batch_size, plot=False, store_paths=False,pause_for_plot=False):
-        """Start training.
+    def train(self, n_epochs, batch_size, plot=False, store_paths=False, pause_for_plot=False):
 
+        """Start training.
         Args:
             n_epochs (int): Number of epochs.
             batch_size (int): Number of environment steps in one batch.
             plot (bool): Visualize policy by doing rollout after each epoch.
             store_paths (bool): Save paths in snapshot.
             pause_for_plot (bool): Pause for plot.
-
         Raises:
             NotSetupError: If train() is called before setup().
-
         Returns:
             float: The average return in last epoch cycle.
-
         """
+
         if not self._has_setup:
             raise NotSetupError('Use setup() to setup runner before training.')
 
         # Save arguments for restore
-        self._train_args = TrainArgs(n_epochs=n_epochs, batch_size=batch_size, plot=plot, store_paths=store_paths, pause_for_plot=pause_for_plot, start_epoch=0)
+        self._train_args = TrainArgs(n_epochs=n_epochs,
+                                     batch_size=batch_size,
+                                     plot=plot,
+                                     store_paths=store_paths,
+                                     pause_for_plot=pause_for_plot,
+                                     start_epoch=0)
 
         self._plot = plot
 
@@ -419,12 +420,7 @@ class LocalRunner:
                 logger.dump_all(self.step_itr)
                 tabular.clear()
 
-    def resume(self,
-               n_epochs=None,
-               batch_size=None,
-               plot=None,
-               store_paths=None,
-               pause_for_plot=None):
+    def resume(self, n_epochs=None, batch_size=None, plot=None, store_paths=None, pause_for_plot=None):
         """Resume from restored experiment.
 
         This method provides the same interface as train().
