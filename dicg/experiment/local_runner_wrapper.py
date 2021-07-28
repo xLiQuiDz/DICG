@@ -64,6 +64,7 @@ class LocalRunnerWrapper(LocalRunner):
         logger.log('Saving snapshot...')
 
         params = dict()
+        
         # Save arguments
         params['setup_args'] = self._setup_args
         params['train_args'] = self._train_args

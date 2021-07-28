@@ -33,10 +33,8 @@ class CentralizedMAPPO(MABatchPolopt):
         max_path_length (int): Maximum length of a single rollout.
         num_train_per_epoch (int): Number of train_once calls per epoch.
         discount (float): Discount.
-        gae_lambda (float): Lambda used for generalized advantage
-            estimation.
-        center_adv (bool): Whether to rescale the advantages
-            so that they have mean 0 and standard deviation 1.
+        gae_lambda (float): Lambda used for generalized advantage estimation.
+        center_adv (bool): Whether to rescale the advantages so that they have mean 0 and standard deviation 1.
         positive_adv (bool): Whether to shift the advantages
             so that they are always positive. When used in
             conjunction with center_adv the advantages will be
@@ -76,8 +74,9 @@ class CentralizedMAPPO(MABatchPolopt):
             use_softplus_entropy=False,
             stop_entropy_gradient=False,
             entropy_method='no_entropy',
-            clip_grad_norm=None,
+            clip_grad_norm=None
     ):
+
         self._gae_lambda = gae_lambda
         self._center_adv = center_adv
         self._positive_adv = positive_adv
@@ -90,39 +89,25 @@ class CentralizedMAPPO(MABatchPolopt):
 
         self._maximum_entropy = (entropy_method == 'max')
         self._entropy_regularzied = (entropy_method == 'regularized')
-        self._check_entropy_configuration(entropy_method, center_adv,
-                                          stop_entropy_gradient,
-                                          policy_ent_coeff)
+        self._check_entropy_configuration(entropy_method, center_adv, stop_entropy_gradient, policy_ent_coeff)
         self._episode_reward_mean = collections.deque(maxlen=100)
 
-        self._optimizer = make_optimizer(optimizer,
-                                         policy,
-                                         lr=policy_lr,
-                                         eps=_Default(1e-5))
+        self._optimizer = make_optimizer(optimizer, policy, lr=policy_lr, eps=_Default(1e-5))
 
         if not isinstance(baseline, LinearFeatureBaseline):
-            self._baseline_optimizer = make_optimizer(baseline_optimizer,
-                                                      baseline,
-                                                      lr=policy_lr,
-                                                      eps=_Default(1e-5))
+            self._baseline_optimizer = make_optimizer(baseline_optimizer, baseline, lr=policy_lr, eps=_Default(1e-5))
 
         self._optimization_n_minibatches = optimization_n_minibatches
         self._optimization_mini_epochs = optimization_mini_epochs
 
         self._clip_grad_norm = clip_grad_norm
 
-        super().__init__(env_spec=env_spec,
-                         policy=policy,
-                         baseline=baseline,
-                         discount=discount,
-                         max_path_length=max_path_length,
-                         n_samples=num_train_per_epoch)
+        super().__init__(env_spec=env_spec, policy=policy, baseline=baseline, discount=discount, max_path_length=max_path_length, n_samples=num_train_per_epoch)
 
         self._old_policy = copy.deepcopy(self.policy)
 
     @staticmethod
-    def _check_entropy_configuration(entropy_method, center_adv,
-                                     stop_entropy_gradient, policy_ent_coeff):
+    def _check_entropy_configuration(entropy_method, center_adv, stop_entropy_gradient, policy_ent_coeff):
         if entropy_method not in ('max', 'regularized', 'no_entropy'):
             raise ValueError('Invalid entropy_method')
 
@@ -150,17 +135,16 @@ class CentralizedMAPPO(MABatchPolopt):
                 * average_return: (float)
 
         """
+
         logger.log('Processing samples...')
-        obs, avail_actions, actions, rewards, valids, baselines, returns = \
-            self.process_samples(itr, paths)
+        obs, avail_actions, actions, rewards, valids, baselines, returns = self.process_samples(itr, paths)
 
         # print('processed obs.shape =', obs.shape)
         # print('processed avail_actions.shape=', avail_actions.shape)
         # print(avail_actions)
 
         with torch.no_grad():
-            loss_before = self._compute_loss(itr, obs, avail_actions, actions, 
-                                             rewards, valids, baselines)
+            loss_before = self._compute_loss(itr, obs, avail_actions, actions, rewards, valids, baselines)
             kl_before = self._compute_kl_constraint(obs, avail_actions, actions)
 
         self._old_policy.load_state_dict(self.policy.state_dict())
@@ -247,8 +231,7 @@ class CentralizedMAPPO(MABatchPolopt):
         
         return np.mean(average_returns)
 
-    def _compute_loss(self, itr, obs, avail_actions, actions, rewards, valids, 
-                      baselines):
+    def _compute_loss(self, itr, obs, avail_actions, actions, rewards, valids, baselines):
         """Compute mean value of loss.
 
         Args:

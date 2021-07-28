@@ -46,9 +46,7 @@ def run(args):
             ('seed={}', args.seed)
         ])
 
-        exp_name = '_'.join(
-            [key.format(val) for key, val in exp_layout.items()]
-        )
+        exp_name = '_'.join([key.format(val) for key, val in exp_layout.items()])
 
     else:
         exp_name = args.exp_name
@@ -146,8 +144,8 @@ def run(args):
             env.eval(algo.policy, n_episodes=args.n_eval_episodes, greedy=args.eval_greedy, load_from_file=True, render=args.render)
             env.close()
 
-
 if __name__ == '__main__':
+    
     parser = argparse.ArgumentParser()
 
     # Meta
@@ -158,7 +156,7 @@ if __name__ == '__main__':
     # Train
     parser.add_argument('--seed', '-s', type=int, default=1)
     parser.add_argument('--n_epochs', type=int, default=10) # dicg/np.algos/ma_batch_polopt
-    parser.add_argument('--bs', type=int, default=60000)
+    parser.add_argument('--bs', type=int, default=5000)
     parser.add_argument('--n_envs', type=int, default=1)
 
     # Eval
@@ -171,12 +169,12 @@ if __name__ == '__main__':
 
     # Env
     parser.add_argument('--max_env_steps', type=int, default=128)
-    parser.add_argument('--grid_size', type=int, default=5)
-    parser.add_argument('--n_agents', '-n', type=int, default=2)
-    parser.add_argument('--n_preys', type=int, default=1)
+    parser.add_argument('--grid_size', type=int, default=8)
+    parser.add_argument('--n_agents', '-n', type=int, default=4)
+    parser.add_argument('--n_preys', type=int, default=4)
     parser.add_argument('--step_cost', type=float, default=-0.01)
     parser.add_argument('--penalty', type=float, default=-0.5)
-    parser.add_argument('--capture_reward', type=float, default=10)
+    parser.add_argument('--capture_reward', type=float, default=20)
     parser.add_argument('--agent_visible', type=int, default=0)
 
     # Algo

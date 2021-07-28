@@ -28,7 +28,7 @@ class CentralizedMAOnPolicyVectorizedSampler(BatchSampler):
 
     def __init__(self, algo, env, n_envs=None):
         if n_envs is None:
-            n_envs = singleton_pool.n_parallel * 4
+            n_envs = singleton_pool.n_parallel * 1
         super().__init__(algo, env)
         self._n_envs = n_envs
         self._n_agents = env.n_agents

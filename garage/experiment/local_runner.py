@@ -138,16 +138,13 @@ class LocalRunner:
         self.step_itr = None
         self.step_path = None
 
-    def make_sampler(self, sampler_cls, *, seed=None, n_workers=psutil.cpu_count(logical=False), max_path_length=None,
-                     worker_class=DefaultWorker,
-                     sampler_args=None):
+    def make_sampler(self, sampler_cls, *, seed=None, n_workers=psutil.cpu_count(logical=False), max_path_length=None, worker_class=DefaultWorker, sampler_args=None):
         """Construct a Sampler from a Sampler class.
 
         Args:
             sampler_cls (type): The type of sampler to construct.
             seed (int): Seed to use in sampler workers.
-            max_path_length (int): Maximum path length to be sampled by the
-                sampler. Paths longer than this will be truncated.
+            max_path_length (int): Maximum path length to be sampled by the sampler. Paths longer than this will be truncated.
             n_workers (int): The number of workers the sampler should use.
             worker_class (type): Type of worker the Sampler should use.
             sampler_args (dict or None): Additional arguments that should be
@@ -171,8 +168,8 @@ class LocalRunner:
                 max_path_length=max_path_length,
                 n_workers=n_workers,
                 worker_class=worker_class),
-                                                   agents=self._algo.policy,
-                                                   envs=self._env)
+                agents=self._algo.policy,
+                envs=self._env)
 
     def setup(self, algo, env, sampler_cls=None, sampler_args=None):
         """Set up runner for algorithm and environment.
@@ -297,10 +294,7 @@ class LocalRunner:
 
         set_seed(self._setup_args.seed)
 
-        self.setup(env=saved['env'],
-                   algo=saved['algo'],
-                   sampler_cls=self._setup_args.sampler_cls,
-                   sampler_args=self._setup_args.sampler_args)
+        self.setup(env=saved['env'], algo=saved['algo'], sampler_cls=self._setup_args.sampler_cls, sampler_args=self._setup_args.sampler_args)
 
         n_epochs = self._train_args.n_epochs
         last_epoch = self._stats.total_epoch
@@ -360,13 +354,7 @@ class LocalRunner:
             raise NotSetupError('Use setup() to setup runner before training.')
 
         # Save arguments for restore
-        self._train_args = TrainArgs(n_epochs=n_epochs,
-                                     batch_size=batch_size,
-                                     plot=plot,
-                                     store_paths=store_paths,
-                                     pause_for_plot=pause_for_plot,
-                                     start_epoch=0)
-
+        self._train_args = TrainArgs(n_epochs=n_epochs, batch_size=batch_size, plot=plot, store_paths=store_paths, pause_for_plot=pause_for_plot, start_epoch=0)
         self._plot = plot
 
         return self._algo.train(self)

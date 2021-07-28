@@ -46,9 +46,7 @@ def run(args):
             ('seed={}', args.seed)
         ])
 
-        exp_name = '_'.join(
-            [key.format(val) for key, val in exp_layout.items()]
-        )
+        exp_name = '_'.join([key.format(val) for key, val in exp_layout.items()])
 
     else:
         exp_name = args.exp_name
@@ -131,6 +129,7 @@ def run(args):
         train_predatorprey(args_dict=vars(args))
 
 if __name__ == '__main__':
+    
     parser = argparse.ArgumentParser()
 
     # Meta
