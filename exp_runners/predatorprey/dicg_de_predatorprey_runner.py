@@ -172,17 +172,17 @@ if __name__ == '__main__':
     # Train
     parser.add_argument('--seed', '-s', type=int, default=1)
     parser.add_argument('--n_epochs', type=int, default=1000)
-    parser.add_argument('--bs', type=int, default=60000)
+    parser.add_argument('--bs', type=int, default=40000)
     parser.add_argument('--n_envs', type=int, default=1)
 
     # Eval
-    parser.add_argument('--run_id', type=int, default=0) # sequential naming
+    parser.add_argument('--run_id', type=int, default=0) 
     parser.add_argument('--n_eval_episodes', type=int, default=100)
     parser.add_argument('--render', type=int, default=1)
     parser.add_argument('--inspect_steps', type=int, default=0)
     parser.add_argument('--eval_during_training', type=int, default=0)
     parser.add_argument('--eval_greedy', type=int, default=1)
-    parser.add_argument('--eval_epoch_freq', type=int, default=5)
+    parser.add_argument('--eval_epoch_freq', type=int, default=1)
 
     # Env
     parser.add_argument('--max_env_steps', type=int, default=200)

@@ -155,13 +155,13 @@ if __name__ == '__main__':
 
     # Train
     parser.add_argument('--seed', '-s', type=int, default=1)
-    parser.add_argument('--n_epochs', type=int, default=10) # dicg/np.algos/ma_batch_polopt
+    parser.add_argument('--n_epochs', type=int, default=1000) 
     parser.add_argument('--bs', type=int, default=5000)
     parser.add_argument('--n_envs', type=int, default=1)
 
     # Eval
     parser.add_argument('--run_id', type=int, default=0) 
-    parser.add_argument('--n_eval_episodes', type=int, default=1)
+    parser.add_argument('--n_eval_episodes', type=int, default=100)
     parser.add_argument('--render', type=int, default=1)
     parser.add_argument('--eval_during_training', type=int, default=1)
     parser.add_argument('--eval_greedy', type=int, default=1)
@@ -169,12 +169,12 @@ if __name__ == '__main__':
 
     # Env
     parser.add_argument('--max_env_steps', type=int, default=128)
-    parser.add_argument('--grid_size', type=int, default=8)
+    parser.add_argument('--grid_size', type=int, default=10)
     parser.add_argument('--n_agents', '-n', type=int, default=4)
     parser.add_argument('--n_preys', type=int, default=4)
     parser.add_argument('--step_cost', type=float, default=-0.01)
     parser.add_argument('--penalty', type=float, default=-0.5)
-    parser.add_argument('--capture_reward', type=float, default=20)
+    parser.add_argument('--capture_reward', type=float, default=10)
     parser.add_argument('--agent_visible', type=int, default=0)
 
     # Algo
