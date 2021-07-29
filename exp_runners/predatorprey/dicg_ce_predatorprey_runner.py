@@ -211,7 +211,7 @@ if __name__ == '__main__':
     parser.add_argument('--n_eval_episodes', type=int, default=100)
     parser.add_argument('--render', type=int, default=1)
     parser.add_argument('--inspect_steps', type=int, default=0)
-    parser.add_argument('--eval_during_training', type=int, default=0)
+    parser.add_argument('--eval_during_training', type=int, default=1)
     parser.add_argument('--eval_greedy', type=int, default=1)
     parser.add_argument('--eval_epoch_freq', type=int, default=1)
 
